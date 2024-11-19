@@ -47,30 +47,30 @@ def banner():
     $$/   $$/  $$$$$$$/ $$/   $$/ $$/      $$/
     """) 
     print(f'{Fore.RED}            https://github.com/shyybi{Fore.RESET}')
-    base_url = input(f'{Fore.RESET} URL you wanna scan : ')
-    print(f'{Fore.MAGENTA}[i] URL de base: {base_url}{Fore.RESET}')
+    base_url = input(f'{Fore.RESET} URL you wanna scan: ')
+    print(f'{Fore.MAGENTA}[i] Base URL: {base_url}{Fore.RESET}')
     return base_url
 
 def detect_cms(url):
     try:
         response = requests.get(url, timeout=5)
         if 'wp-content' in response.text or 'wp-includes' in response.text:
-            print(f'{Fore.YELLOW}[i] CMS WordPress détecté.{Fore.RESET}')
+            print(f'{Fore.YELLOW}[i] WordPress CMS detected.{Fore.RESET}')
             return 'WordPress'
         elif 'Joomla!' in response.text:
-            print(f'{Fore.YELLOW}[i] CMS Joomla détecté.{Fore.RESET}')
+            print(f'{Fore.YELLOW}[i] Joomla CMS detected.{Fore.RESET}')
             return 'Joomla'
         elif 'Drupal' in response.text:
-            print(f'{Fore.YELLOW}[i] CMS Drupal détecté.{Fore.RESET}')
+            print(f'{Fore.YELLOW}[i] Drupal CMS detected.{Fore.RESET}')
             return 'Drupal'
         else:
-            print(f'{Fore.YELLOW}[i] CMS non détecté.{Fore.RESET}')
+            print(f'{Fore.YELLOW}[i] CMS not detected.{Fore.RESET}')
             return 'Unknown'
     except requests.exceptions.Timeout:
-        print(f'{Fore.YELLOW}[!] Timeout lors de la détection du CMS pour {url}{Fore.RESET}')
+        print(f'{Fore.YELLOW}[!] Timeout while detecting CMS for {url}{Fore.RESET}')
         return 'Unknown'
     except requests.exceptions.RequestException as e:
-        print(f'{Fore.YELLOW}[!] Erreur lors de la détection du CMS: {e}{Fore.RESET}')
+        print(f'{Fore.YELLOW}[!] Error while detecting CMS: {e}{Fore.RESET}')
         return 'Unknown'
 
 def detect_waf(url):
@@ -119,15 +119,15 @@ def detect_waf(url):
         server_header = response.headers.get('Server', '').lower()
         for key, waf_name in wafs.items():
             if key in server_header:
-                print(f'[!] Pare-feu détecté: {waf_name}')
+                print(f'[!] Firewall detected: {waf_name}')
                 return waf_name
-        print('[i] Aucun pare-feu détecté dans l\'en-tête.')
+        print('[i] No firewall detected in the header.')
         return 'None'
     except requests.exceptions.Timeout:
-        print(f'[!] Timeout lors de la détection WAF pour {url}')
+        print(f'[!] Timeout while detecting WAF for {url}')
         return 'Timeout'
     except requests.exceptions.RequestException as e:
-        print(f'[!] Erreur lors de la détection WAF: {e}')
+        print(f'[!] Error while detecting WAF: {e}')
         return 'Error'
 
 def scan_paths(base_url, paths):
@@ -136,15 +136,15 @@ def scan_paths(base_url, paths):
         try:
             response = requests.get(url, timeout=5)
             if response.status_code == 200:
-                print(f'{Fore.GREEN}[+] Trouvé : {Fore.RESET}{url}')
+                print(f'{Fore.GREEN}[+] Found: {Fore.RESET}{url}')
             elif response.status_code == 403:
-                print(f'{Fore.RED}[-] Accès interdit :{Fore.RESET} {url}')
+                print(f'{Fore.RED}[-] Access forbidden: {Fore.RESET} {url}')
             else:
-                print(f'{Fore.BLUE}[i] {response.status_code} : {Fore.RESET} {url}')
+                print(f'{Fore.BLUE}[i] {response.status_code}: {Fore.RESET} {url}')
         except requests.exceptions.Timeout:
-            print(f'[!] Timeout pour {url}')
+            print(f'[!] Timeout for {url}')
         except requests.exceptions.RequestException as e:
-            print(f'[!] Erreur lors de la requête pour {url}: {e}')
+            print(f'[!] Error while requesting {url}: {e}')
 
 base_url = banner()
 cms = detect_cms(base_url)
