@@ -1,5 +1,5 @@
 # KeKW
-Simple Osint tool for Webiste
+Simple Osint tool for Website
 
 Don't use it for illegal use
 
